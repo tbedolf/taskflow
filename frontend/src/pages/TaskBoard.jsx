@@ -26,7 +26,7 @@ export default function TaskBoard() {
   async function fetchTasks() {
     try {
       const res = await axios.get(
-        "http://localhost:5001/api/tasks/1",
+        `${import.meta.env.VITE_API_URL}/api/tasks/1`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -43,7 +43,7 @@ export default function TaskBoard() {
   async function createTask() {
     try {
       await axios.post(
-        "http://localhost:5001/api/tasks",
+        `${import.meta.env.VITE_API_URL}/api/tasks`,
         {
           title,
           description,

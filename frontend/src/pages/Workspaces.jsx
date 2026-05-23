@@ -14,7 +14,7 @@ export default function Workspaces() {
   async function fetchWorkspaces() {
     try {
       const res = await axios.get(
-        "http://localhost:5001/api/workspaces",
+        `${import.meta.env.VITE_API_URL}/api/workspaces`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -33,7 +33,7 @@ export default function Workspaces() {
 
     try {
       await axios.post(
-        "http://localhost:5001/api/workspaces",
+        `${import.meta.env.VITE_API_URL}/api/workspaces`,
         {
           name,
         },
