@@ -11,7 +11,12 @@ const router = express.Router();
 */
 router.post("/register", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const {
+      name,
+      email,
+      password,
+      role,
+    } = req.body;
 
     const existingUser =
       await prisma.user.findUnique({
@@ -29,14 +34,34 @@ router.post("/register", async (req, res) => {
 
     const user = await prisma.user.create({
       data: {
+        name,
         email,
         password: hashedPassword,
+        role,
       },
     });
 
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
     res.status(201).json({
       message: "User created successfully",
-      user,
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -93,6 +118,7 @@ router.post("/login", async (req, res) => {
       token,
       user: {
         id: user.id,
+        name: user.name,
         email: user.email,
         role: user.role,
       },
