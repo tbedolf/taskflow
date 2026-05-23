@@ -8,83 +8,40 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(MEMBER)
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  role       String   @default("USER")
 
-  workspaces WorkspaceMember[]
+  createdAt  DateTime @default(now())
 
-  createdAt DateTime @default(now())
+  workspaces Workspace[]
+  tasks      Task[]
 }
 
 model Workspace {
-  id        Int      @id @default(autoincrement())
-  name      String
+  id         Int      @id @default(autoincrement())
+  name       String
 
-  members   WorkspaceMember[]
-  projects  Project[]
+  userId     Int
+  user       User @relation(fields: [userId], references: [id])
 
-  createdAt DateTime @default(now())
-}
+  tasks      Task[]
 
-model WorkspaceMember {
-  id          Int       @id @default(autoincrement())
-
-  userId      Int
-  workspaceId Int
-
-  user        User      @relation(fields: [userId], references: [id])
-  workspace   Workspace @relation(fields: [workspaceId], references: [id])
-
-  createdAt DateTime @default(now())
-
-  @@unique([userId, workspaceId])
-}
-
-model Project {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-
-  workspaceId Int
-  workspace   Workspace @relation(fields: [workspaceId], references: [id])
-
-  tasks       Task[]
-
-  createdAt DateTime @default(now())
+  createdAt  DateTime @default(now())
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String?
+  status       String   @default("TODO")
 
-  status      TaskStatus @default(TODO)
-  priority    Priority   @default(MEDIUM)
+  workspaceId  Int
+  workspace    Workspace @relation(fields: [workspaceId], references: [id])
 
-  projectId   Int
-  project     Project @relation(fields: [projectId], references: [id])
+  userId       Int
+  user         User @relation(fields: [userId], references: [id])
 
-  createdAt DateTime @default(now())
-}
-
-enum Role {
-  ADMIN
-  TEAM_LEAD
-  MEMBER
-}
-
-enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  REVIEW
-  DONE
-}
-
-enum Priority {
-  LOW
-  MEDIUM
-  HIGH
+  createdAt    DateTime @default(now())
 }

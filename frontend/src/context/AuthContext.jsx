@@ -1,27 +1,45 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+    const storedToken =
+      localStorage.getItem("token");
+
+    const storedUser =
+      localStorage.getItem("user");
 
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
     }
+
+    setLoading(false);
   }, []);
 
   function login(data) {
     setToken(data.token);
     setUser(data.user);
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem(
+      "token",
+      data.token
+    );
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(data.user)
+    );
   }
 
   function logout() {
@@ -37,6 +55,7 @@ export function AuthProvider({ children }) {
       value={{
         user,
         token,
+        loading,
         login,
         logout,
       }}

@@ -1,6 +1,30 @@
+import { useEffect, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
+import API from "../services/api";
 
 export default function Dashboard() {
+  const [stats, setStats] = useState({
+    projects: 0,
+    tasks: 0,
+    members: 0,
+  });
+
+  useEffect(() => {
+    async function fetchDashboard() {
+      try {
+        const res = await API.get(
+          "/api/dashboard"
+        );
+
+        setStats(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchDashboard();
+  }, []);
+
   return (
     <DashboardLayout>
       <h1 className="text-4xl font-bold mb-8">
@@ -14,7 +38,7 @@ export default function Dashboard() {
           </h2>
 
           <p className="text-5xl font-bold">
-            0
+            {stats.projects}
           </p>
         </div>
 
@@ -24,7 +48,7 @@ export default function Dashboard() {
           </h2>
 
           <p className="text-5xl font-bold">
-            0
+            {stats.tasks}
           </p>
         </div>
 
@@ -34,7 +58,7 @@ export default function Dashboard() {
           </h2>
 
           <p className="text-5xl font-bold">
-            0
+            {stats.members}
           </p>
         </div>
       </div>
