@@ -4,3 +4,16 @@ dist
 build
 .prisma
 .DS_Store
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
